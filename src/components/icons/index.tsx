@@ -1,5 +1,7 @@
 import type { SVGProps } from "react";
 
+import { cn } from "@/lib/cn";
+
 /*
  * Figma 시안(PDF)의 벡터 경로를 그대로 추출한 아이콘.
  * 색은 currentColor를 따르므로 text-* 유틸리티로 지정한다.
@@ -56,7 +58,7 @@ export function HeartIcon({ filled, className, ...props }: HeartIconProps) {
       width={24}
       height={24}
       {...baseProps}
-      className={`${filled ? "text-red" : "text-gray"} ${className ?? ""}`}
+      className={cn(filled ? "text-red" : "text-gray", className)}
       {...props}
     >
       {filled ? (
