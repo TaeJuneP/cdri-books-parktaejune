@@ -1,18 +1,12 @@
 import { type NextRequest, NextResponse } from "next/server";
 
-import { KAKAO_MAX_PAGE, SEARCH_TARGETS } from "@/features/book/constants";
+import { isSearchTarget, KAKAO_MAX_PAGE } from "@/features/book/constants";
 import {
   KakaoApiError,
   MissingApiKeyError,
   searchKakaoBooks,
 } from "@/features/book/server/kakao-book-client";
 import { toBookSearchResult } from "@/features/book/server/kakao-book-mapper";
-import type { SearchTarget } from "@/features/book/types";
-
-function isSearchTarget(value: string): value is SearchTarget {
-  return (SEARCH_TARGETS as readonly string[]).includes(value);
-}
-
 function errorResponse(message: string, status: number) {
   return NextResponse.json({ message }, { status });
 }
