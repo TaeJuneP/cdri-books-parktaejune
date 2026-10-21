@@ -6,13 +6,15 @@ import { searchBooks } from "@/features/book/api/search-books";
 import { KAKAO_MAX_PAGE } from "@/features/book/constants";
 import { bookKeys } from "@/features/book/query-keys";
 import type { BookSearchResult } from "@/features/book/types";
+import { uniqueBooksById } from "@/features/book/utils/unique-books";
 
 import type { SearchCondition } from "../types";
 
 // 컴포넌트 밖에 두어 참조가 고정되므로, 데이터가 바뀔 때만 다시 계산된다
 function selectBooks(data: InfiniteData<BookSearchResult, number>) {
   return {
-    books: data.pages.flatMap((page) => page.books),
+    // 페이지를 넘나드는 중복도 있으므로 모든 페이지를 합친 뒤 중복을 제거한다
+    books: uniqueBooksById(data.pages.flatMap((page) => page.books)),
     totalCount: data.pages[0]?.totalCount ?? 0,
   };
 }
