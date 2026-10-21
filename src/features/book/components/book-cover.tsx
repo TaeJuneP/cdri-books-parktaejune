@@ -36,6 +36,8 @@ export function BookCover({ src, title, width, height, className }: BookCoverPro
       alt={`${title} 표지`}
       width={width}
       height={height}
+      // 표지 원본 비율이 제각각이라, 시안처럼 고정 박스에 맞춰 잘라내(object-cover) 행 높이를 일정하게 유지
+      style={{ width, height }}
       className={cn("shrink-0 object-cover", className)}
     />
   );
