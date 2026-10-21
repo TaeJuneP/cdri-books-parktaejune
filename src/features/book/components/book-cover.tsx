@@ -4,7 +4,7 @@ import Image from "next/image";
 
 import { cn } from "@/lib/cn";
 
-import { kakaoThumbnailLoader } from "../utils/thumbnail";
+import { KAKAO_DEFAULT_THUMBNAIL_WIDTH, kakaoThumbnailLoader } from "../utils/thumbnail";
 
 interface BookCoverProps {
   src: string | null;
@@ -29,9 +29,13 @@ export function BookCover({ src, title, width, height, className }: BookCoverPro
     );
   }
 
+  // 고해상도(2x) 화면에서도 기본 썸네일(120px)로 충분하면 원본을 그대로 쓰고,
+  // 더 큰 표지(상세보기 210px → 2x 420px)만 CDN 리사이즈 loader로 요청한다
+  const needsResize = width * 2 > KAKAO_DEFAULT_THUMBNAIL_WIDTH;
+
   return (
     <Image
-      loader={kakaoThumbnailLoader}
+      {...(needsResize ? { loader: kakaoThumbnailLoader } : { unoptimized: true })}
       src={src}
       alt={`${title} 표지`}
       width={width}
