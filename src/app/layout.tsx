@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { Noto_Sans_KR } from "next/font/google";
+import { Header } from "@/components/layout/header";
+
 import "./globals.css";
 import { Providers } from "./providers";
 
@@ -19,7 +21,10 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="ko" className={`${notoSansKr.variable} h-full`}>
       <body className="flex min-h-full flex-col">
-        <Providers>{children}</Providers>
+        <Providers>
+          <Header />
+          {children}
+        </Providers>
       </body>
     </html>
   );
