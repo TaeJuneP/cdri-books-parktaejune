@@ -3,6 +3,9 @@ import type { ImageLoader } from "next/image";
 /** 카카오 썸네일 URL의 리사이즈 파라미터 (예: /thumb/R120x174.q85/) */
 const KAKAO_RESIZE_PATTERN = /\/thumb\/R\d+x\d+/;
 
+/** 카카오 검색 API가 기본으로 내려주는 썸네일 너비 (R120x174) */
+export const KAKAO_DEFAULT_THUMBNAIL_WIDTH = 120;
+
 /**
  * 카카오 CDN이 허용하는 리사이즈 크기 (너비 오름차순).
  * 임의 크기는 403으로 거부되어, 실제 요청으로 응답(200)을 확인한 크기만 사용한다.
