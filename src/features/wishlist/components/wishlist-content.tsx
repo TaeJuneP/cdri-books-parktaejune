@@ -10,7 +10,7 @@ import { BOOK_PAGE_SIZE } from "@/features/book/constants";
 import { useIntersectionObserver } from "@/hooks/use-intersection-observer";
 
 import { useWishlistHydrated, useWishlistStore } from "../stores/wishlist-store";
-import { WishButton } from "./wish-button";
+import { renderWishButton } from "./wish-button";
 
 /** 내가 찜한 책 목록. 저장된 스냅샷을 10개씩 나눠 보여준다 (시안: 페이지당 10개) */
 export function WishlistContent() {
@@ -40,11 +40,7 @@ export function WishlistContent() {
         <>
           <ul className="mt-9">
             {visibleItems.map((book) => (
-              <BookItem
-                key={book.id}
-                book={book}
-                coverAction={(size) => <WishButton book={book} size={size} />}
-              />
+              <BookItem key={book.id} book={book} coverAction={renderWishButton} />
             ))}
           </ul>
           <div ref={sentinelRef} aria-hidden />

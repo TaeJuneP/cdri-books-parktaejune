@@ -1,6 +1,6 @@
 "use client";
 
-import { type ReactNode, useEffect, useId, useRef, useState } from "react";
+import { memo, type ReactNode, useEffect, useId, useRef, useState } from "react";
 
 import { ChevronDownIcon } from "@/components/icons";
 import { Button, buttonVariants } from "@/components/ui/button";
@@ -19,12 +19,16 @@ interface BookItemProps {
   /**
    * 표지 위에 겹쳐 놓을 요소 (예: 찜하기 버튼). 크기에 맞는 요소를 반환한다.
    * book 기능이 wishlist 기능을 직접 알지 않도록 사용하는 쪽에서 주입한다.
+   * memo가 유효하도록 렌더링마다 새로 만들지 않는 고정 함수를 넘긴다.
    */
-  coverAction?: (size: "sm" | "lg") => ReactNode;
+  coverAction?: (book: Book, size: "sm" | "lg") => ReactNode;
 }
 
-/** 도서 목록의 한 행. 상세보기로 펼쳐 책 소개와 가격 정보를 볼 수 있다 */
-export function BookItem({ book, coverAction }: BookItemProps) {
+/**
+ * 도서 목록의 한 행. 상세보기로 펼쳐 책 소개와 가격 정보를 볼 수 있다.
+ * 무한 스크롤로 목록이 늘어날 때 이미 그려진 행은 다시 렌더링하지 않도록 memo로 감싼다.
+ */
+export const BookItem = memo(function BookItem({ book, coverAction }: BookItemProps) {
   const [isExpanded, setIsExpanded] = useState(false);
   const detailId = useId();
   const toggleRef = useRef<HTMLButtonElement>(null);
@@ -67,7 +71,7 @@ export function BookItem({ book, coverAction }: BookItemProps) {
         >
           <div className="relative col-start-1 row-start-1 lg:row-span-3">
             <BookCover src={book.thumbnail} title={book.title} width={210} height={280} />
-            {coverAction?.("lg")}
+            {coverAction?.(book, "lg")}
           </div>
           <div className="col-span-2 row-start-2 min-w-0 lg:col-span-1 lg:col-start-2 lg:row-span-3 lg:row-start-1 lg:pt-5">
             <div className="flex flex-wrap items-center gap-x-4 gap-y-1">
@@ -92,7 +96,7 @@ export function BookItem({ book, coverAction }: BookItemProps) {
         <div className="grid grid-cols-[48px_1fr] items-start gap-x-4 gap-y-2 py-4 lg:flex lg:h-[100px] lg:items-center lg:gap-0 lg:py-0 lg:pr-4 lg:pl-12">
           <div className="relative row-span-3 shrink-0">
             <BookCover src={book.thumbnail} title={book.title} width={48} height={68} />
-            {coverAction?.("sm")}
+            {coverAction?.(book, "sm")}
           </div>
           <div className="flex min-w-0 flex-col gap-1 lg:ml-12 lg:flex-1 lg:flex-row lg:items-center lg:gap-4">
             <h3 className="line-clamp-2 text-title3 text-text-primary lg:line-clamp-none lg:truncate">
@@ -113,7 +117,7 @@ export function BookItem({ book, coverAction }: BookItemProps) {
       )}
     </li>
   );
-}
+});
 
 /** 원가/할인가. 시안 규칙에 따라 할인가가 없으면 원가만 취소선 없이 표시한다 */
 function PriceDetail({ book }: { book: Book }) {
