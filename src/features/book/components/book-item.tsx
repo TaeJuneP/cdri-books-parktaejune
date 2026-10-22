@@ -10,6 +10,10 @@ import type { Book } from "../types";
 import { formatPrice, getSellingPrice, hasDiscount } from "../utils/price";
 import { BookCover } from "./book-cover";
 
+/** 행 버튼: 모바일은 작게, lg 이상은 시안 크기(115×48) */
+const ROW_BUTTON_CLASS =
+  "h-9 min-w-0 px-3 text-body2 lg:h-12 lg:min-w-[115px] lg:px-5 lg:text-caption";
+
 interface BookItemProps {
   book: Book;
   /**
@@ -36,6 +40,7 @@ export function BookItem({ book, coverAction }: BookItemProps) {
     <Button
       ref={toggleRef}
       variant="secondary"
+      className={ROW_BUTTON_CLASS}
       aria-expanded={isExpanded}
       aria-controls={detailId}
       onClick={() => {
@@ -53,44 +58,55 @@ export function BookItem({ book, coverAction }: BookItemProps) {
   return (
     <li className="border-b border-divider">
       {isExpanded ? (
-        <div id={detailId} className="flex pt-6 pr-4 pb-10 pl-[54px]">
-          <div className="relative shrink-0">
+        // 모바일: [표지 | 상세보기] / [책 소개] / [가격·구매하기] 순으로 쌓고,
+        // lg 이상: 시안대로 [표지 | 책 소개 | 상세보기·가격·구매하기] 3열.
+        // 요소를 화면별로 두 벌 두지 않고 grid 배치만 바꿔, 읽기·포커스 순서를 동일하게 유지한다
+        <div
+          id={detailId}
+          className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-5 py-6 lg:grid-cols-[210px_1fr_240px] lg:grid-rows-[auto_1fr_auto] lg:gap-x-8 lg:gap-y-0 lg:pt-6 lg:pr-4 lg:pb-10 lg:pl-[54px]"
+        >
+          <div className="relative col-start-1 row-start-1 lg:row-span-3">
             <BookCover src={book.thumbnail} title={book.title} width={210} height={280} />
             {coverAction?.("lg")}
           </div>
-          <div className="ml-8 min-w-0 flex-1 pt-5">
-            <div className="flex items-center gap-4">
+          <div className="col-span-2 row-start-2 min-w-0 lg:col-span-1 lg:col-start-2 lg:row-span-3 lg:row-start-1 lg:pt-5">
+            <div className="flex flex-wrap items-center gap-x-4 gap-y-1">
               <h3 className="text-title3 text-text-primary">{book.title}</h3>
               <p className="text-body2 text-text-subtitle">{book.authors.join(", ")}</p>
             </div>
             <h4 className="mt-4 text-body2-bold text-text-primary">책 소개</h4>
-            <p className="mt-3 max-w-[360px] text-small whitespace-pre-line text-text-primary">
+            <p className="mt-3 text-small whitespace-pre-line text-text-primary lg:max-w-[360px]">
               {book.contents || "책 소개가 없습니다."}
             </p>
           </div>
-          <div className="ml-12 flex w-[240px] shrink-0 flex-col items-end justify-between">
+          <div className="col-start-2 row-start-1 justify-self-end lg:col-start-3">
             {toggleButton}
-            <div className="flex w-full flex-col items-end gap-7">
-              <PriceDetail book={book} />
-              <PurchaseLink book={book} className="w-full" />
-            </div>
+          </div>
+          <div className="col-span-2 row-start-3 flex flex-col items-end gap-5 lg:col-span-1 lg:col-start-3 lg:gap-7">
+            <PriceDetail book={book} />
+            <PurchaseLink book={book} className="w-full" />
           </div>
         </div>
       ) : (
-        <div className="flex h-[100px] items-center pr-4 pl-12">
-          <div className="relative shrink-0">
+        // 모바일: [썸네일 | 제목·저자 / 가격 / 버튼] / lg 이상: 시안대로 한 줄(높이 100px)
+        <div className="grid grid-cols-[48px_1fr] items-start gap-x-4 gap-y-2 py-4 lg:flex lg:h-[100px] lg:items-center lg:gap-0 lg:py-0 lg:pr-4 lg:pl-12">
+          <div className="relative row-span-3 shrink-0">
             <BookCover src={book.thumbnail} title={book.title} width={48} height={68} />
             {coverAction?.("sm")}
           </div>
-          <div className="ml-12 flex min-w-0 flex-1 items-center gap-4">
-            <h3 className="truncate text-title3 text-text-primary">{book.title}</h3>
-            <p className="shrink-0 text-body2 text-text-secondary">{book.authors.join(", ")}</p>
+          <div className="flex min-w-0 flex-col gap-1 lg:ml-12 lg:flex-1 lg:flex-row lg:items-center lg:gap-4">
+            <h3 className="line-clamp-2 text-title3 text-text-primary lg:line-clamp-none lg:truncate">
+              {book.title}
+            </h3>
+            <p className="truncate text-body2 text-text-secondary lg:max-w-[40%] lg:shrink-0">
+              {book.authors.join(", ")}
+            </p>
           </div>
-          <p className="ml-6 shrink-0 text-title3 text-text-primary">
+          <p className="text-title3 text-text-primary lg:ml-6 lg:shrink-0">
             {formatPrice(getSellingPrice(book))}
           </p>
-          <div className="ml-14 flex shrink-0 gap-2">
-            <PurchaseLink book={book} />
+          <div className="flex gap-2 lg:ml-14 lg:shrink-0">
+            <PurchaseLink book={book} className={ROW_BUTTON_CLASS} />
             {toggleButton}
           </div>
         </div>
