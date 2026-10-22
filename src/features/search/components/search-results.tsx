@@ -3,6 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { EmptyState } from "@/components/ui/empty-state";
 import { BookItem } from "@/features/book/components/book-item";
+import { WishButton } from "@/features/wishlist/components/wish-button";
 import { useIntersectionObserver } from "@/hooks/use-intersection-observer";
 
 import { useBookSearch } from "../hooks/use-book-search";
@@ -52,7 +53,11 @@ export function SearchResults({ condition }: SearchResultsProps) {
           <>
             <ul className="mt-9">
               {data.books.map((book) => (
-                <BookItem key={book.id} book={book} />
+                <BookItem
+                  key={book.id}
+                  book={book}
+                  coverAction={(size) => <WishButton book={book} size={size} />}
+                />
               ))}
             </ul>
             <div ref={sentinelRef} aria-hidden />

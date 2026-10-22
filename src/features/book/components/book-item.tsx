@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useId, useRef, useState } from "react";
+import { type ReactNode, useEffect, useId, useRef, useState } from "react";
 
 import { ChevronDownIcon } from "@/components/icons";
 import { Button, buttonVariants } from "@/components/ui/button";
@@ -12,10 +12,15 @@ import { BookCover } from "./book-cover";
 
 interface BookItemProps {
   book: Book;
+  /**
+   * 표지 위에 겹쳐 놓을 요소 (예: 찜하기 버튼). 크기에 맞는 요소를 반환한다.
+   * book 기능이 wishlist 기능을 직접 알지 않도록 사용하는 쪽에서 주입한다.
+   */
+  coverAction?: (size: "sm" | "lg") => ReactNode;
 }
 
 /** 도서 목록의 한 행. 상세보기로 펼쳐 책 소개와 가격 정보를 볼 수 있다 */
-export function BookItem({ book }: BookItemProps) {
+export function BookItem({ book, coverAction }: BookItemProps) {
   const [isExpanded, setIsExpanded] = useState(false);
   const detailId = useId();
   const toggleRef = useRef<HTMLButtonElement>(null);
@@ -49,7 +54,10 @@ export function BookItem({ book }: BookItemProps) {
     <li className="border-b border-divider">
       {isExpanded ? (
         <div id={detailId} className="flex pt-6 pr-4 pb-10 pl-[54px]">
-          <BookCover src={book.thumbnail} title={book.title} width={210} height={280} />
+          <div className="relative shrink-0">
+            <BookCover src={book.thumbnail} title={book.title} width={210} height={280} />
+            {coverAction?.("lg")}
+          </div>
           <div className="ml-8 min-w-0 flex-1 pt-5">
             <div className="flex items-center gap-4">
               <h3 className="text-title3 text-text-primary">{book.title}</h3>
@@ -70,7 +78,10 @@ export function BookItem({ book }: BookItemProps) {
         </div>
       ) : (
         <div className="flex h-[100px] items-center pr-4 pl-12">
-          <BookCover src={book.thumbnail} title={book.title} width={48} height={68} />
+          <div className="relative shrink-0">
+            <BookCover src={book.thumbnail} title={book.title} width={48} height={68} />
+            {coverAction?.("sm")}
+          </div>
           <div className="ml-12 flex min-w-0 flex-1 items-center gap-4">
             <h3 className="truncate text-title3 text-text-primary">{book.title}</h3>
             <p className="shrink-0 text-body2 text-text-secondary">{book.authors.join(", ")}</p>

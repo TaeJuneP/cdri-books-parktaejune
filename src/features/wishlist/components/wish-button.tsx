@@ -1,0 +1,36 @@
+"use client";
+
+import { HeartIcon } from "@/components/icons";
+import type { Book } from "@/features/book/types";
+import { cn } from "@/lib/cn";
+
+import { useIsWished, useWishlistStore } from "../stores/wishlist-store";
+
+interface WishButtonProps {
+  book: Book;
+  /** sm: 목록 썸네일(48px) 위, lg: 상세보기 표지(210px) 위 */
+  size: "sm" | "lg";
+}
+
+/** 표지 오른쪽 위에 겹쳐 놓는 찜하기(하트) 토글 버튼 */
+export function WishButton({ book, size }: WishButtonProps) {
+  const isWished = useIsWished(book.id);
+  const toggle = useWishlistStore((state) => state.toggle);
+  const iconSize = size === "sm" ? 16 : 24;
+
+  return (
+    <button
+      type="button"
+      // 토글 버튼의 상태는 aria-pressed로 전달하고, 이름은 상태와 무관하게 고정한다
+      aria-pressed={isWished}
+      aria-label={`${book.title} 찜하기`}
+      onClick={() => toggle(book)}
+      className={cn(
+        "absolute flex items-center justify-center rounded-sm transition-transform active:scale-90",
+        size === "sm" ? "top-0 right-0" : "top-2 right-2",
+      )}
+    >
+      <HeartIcon filled={isWished} width={iconSize} height={iconSize} />
+    </button>
+  );
+}
