@@ -32,7 +32,7 @@ export function DetailSearch({ currentCondition, onSearch }: DetailSearchProps) 
   useDismiss({ ref: containerRef, onDismiss: close, enabled: isOpen });
 
   return (
-    <div ref={containerRef} className="relative">
+    <div ref={containerRef} className="relative shrink-0">
       <Button
         ref={triggerRef}
         variant="outline"
@@ -94,7 +94,8 @@ function DetailSearchPanel({ id, initialCondition, onClose, onSubmit }: DetailSe
       role="dialog"
       aria-label="상세검색"
       // 시안: 버튼 아래 14px, 버튼 중앙 정렬, 360×160
-      className="absolute top-[calc(100%+14px)] left-1/2 z-20 w-[360px] -translate-x-1/2 rounded-lg bg-white px-6 pt-9 pb-9 shadow-[0_4px_14px_6px_rgba(151,151,151,0.15)]"
+      // 모바일: 버튼이 화면 오른쪽 끝에 있어 중앙 정렬하면 화면 밖으로 나가므로 오른쪽 정렬
+      className="absolute top-[calc(100%+14px)] right-0 z-20 w-[min(360px,calc(100vw-32px))] rounded-lg bg-white px-6 pt-9 pb-9 shadow-[0_4px_14px_6px_rgba(151,151,151,0.15)] md:right-auto md:left-1/2 md:-translate-x-1/2"
     >
       <button
         type="button"
