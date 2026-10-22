@@ -9,14 +9,17 @@ const NAV_ITEMS = [
 
 export function Header() {
   return (
-    <header className="h-20 w-full">
-      {/* 로고 | 메뉴(가운데) | 빈 칸 — 3열 그리드로 메뉴를 화면 중앙에 고정 */}
-      <div className="mx-auto grid h-full max-w-[1920px] grid-cols-[1fr_auto_1fr] items-center px-4 md:px-10 xl:px-40">
-        <Link href="/" className="text-title1 whitespace-nowrap text-text-primary">
+    <header className="w-full md:h-20">
+      {/* 모바일: 로고와 메뉴를 위아래로 / md 이상: 로고 | 메뉴(가운데) | 빈 칸의 3열 그리드 */}
+      <div className="mx-auto flex max-w-[1920px] flex-col items-center gap-3 px-4 py-4 md:grid md:h-full md:grid-cols-[1fr_auto_1fr] md:gap-0 md:px-10 md:py-0 xl:px-40">
+        <Link
+          href="/"
+          className="text-title3 whitespace-nowrap text-text-primary md:justify-self-start md:text-title1"
+        >
           CERTICOS BOOKS
         </Link>
         <nav aria-label="주요 메뉴">
-          <ul className="flex gap-6 md:gap-14">
+          <ul className="flex gap-8 md:gap-14">
             {NAV_ITEMS.map(({ href, label }) => (
               <li key={href}>
                 <NavLink href={href}>{label}</NavLink>

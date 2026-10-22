@@ -32,7 +32,7 @@ export function BookSearch() {
 
   return (
     <div className="mt-6">
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-2 md:gap-4">
         <SearchBar
           // 상세검색 중에는 전체 검색창을 비운다
           defaultQuery={detailCondition ? "" : condition.query}

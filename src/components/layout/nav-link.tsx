@@ -21,7 +21,7 @@ export function NavLink({ href, children }: NavLinkProps) {
       href={href}
       aria-current={isActive ? "page" : undefined}
       className={cn(
-        "border-b pb-1 text-body1 text-text-primary transition-colors hover:text-primary",
+        "border-b pb-1 text-caption whitespace-nowrap text-text-primary transition-colors hover:text-primary md:text-body1",
         isActive ? "border-primary" : "border-transparent",
       )}
     >

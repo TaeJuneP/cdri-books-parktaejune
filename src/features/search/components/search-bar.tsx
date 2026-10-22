@@ -101,7 +101,7 @@ export function SearchBar({ defaultQuery, history, onSearch, onRemoveHistory }: 
       onBlur={handleBlur}
       onKeyDown={handleKeyDown}
       // 기록 목록은 아래 콘텐츠를 밀지 않고 위에 겹쳐 펼쳐지므로, 자리는 입력창 높이만 차지한다
-      className="relative h-[50px] w-full max-w-[480px]"
+      className="relative h-[50px] w-full max-w-[480px] min-w-0 flex-1 md:flex-none"
     >
       <div
         className={cn(

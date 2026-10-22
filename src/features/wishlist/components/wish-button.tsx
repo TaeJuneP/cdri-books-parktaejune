@@ -34,3 +34,8 @@ export function WishButton({ book, size }: WishButtonProps) {
     </button>
   );
 }
+
+/** BookItem의 coverAction으로 넘기는 고정 렌더 함수 (렌더링마다 새로 만들지 않아 memo가 유지됨) */
+export function renderWishButton(book: Book, size: WishButtonProps["size"]) {
+  return <WishButton book={book} size={size} />;
+}
