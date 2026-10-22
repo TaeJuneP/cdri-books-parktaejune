@@ -2,7 +2,10 @@
 
 import { Button } from "@/components/ui/button";
 import { EmptyState } from "@/components/ui/empty-state";
+import { ResultCount } from "@/components/ui/result-count";
 import { BookItem } from "@/features/book/components/book-item";
+import { BookListSkeleton } from "@/features/book/components/book-list-skeleton";
+import { WishButton } from "@/features/wishlist/components/wish-button";
 import { useIntersectionObserver } from "@/hooks/use-intersection-observer";
 
 import { useBookSearch } from "../hooks/use-book-search";
@@ -33,12 +36,7 @@ export function SearchResults({ condition }: SearchResultsProps) {
 
   return (
     <section aria-labelledby="search-result-heading" className="mt-6">
-      <h2 id="search-result-heading" className="flex gap-4 text-caption text-text-primary">
-        도서 검색 결과
-        <span>
-          총 <span className="text-primary">{totalCount.toLocaleString("ko-KR")}</span>건
-        </span>
-      </h2>
+      <ResultCount id="search-result-heading" label="도서 검색 결과" count={totalCount} />
 
       {/* 검색어가 없는 첫 진입 화면도 시안과 같이 '결과 없음'으로 안내한다 */}
       {!condition.query ? (
@@ -52,7 +50,11 @@ export function SearchResults({ condition }: SearchResultsProps) {
           <>
             <ul className="mt-9">
               {data.books.map((book) => (
-                <BookItem key={book.id} book={book} />
+                <BookItem
+                  key={book.id}
+                  book={book}
+                  coverAction={(size) => <WishButton book={book} size={size} />}
+                />
               ))}
             </ul>
             <div ref={sentinelRef} aria-hidden />
@@ -79,22 +81,8 @@ export function SearchResults({ condition }: SearchResultsProps) {
           </Button>
         </div>
       ) : (
-        <BookListSkeleton />
+        <BookListSkeleton label="검색 결과를 불러오는 중" />
       )}
     </section>
-  );
-}
-
-/** 첫 페이지 로딩 중 행 레이아웃과 같은 크기의 자리 표시자를 보여 화면 흔들림을 줄인다 */
-function BookListSkeleton() {
-  return (
-    <ul className="mt-9" aria-busy="true" aria-label="검색 결과를 불러오는 중">
-      {Array.from({ length: 5 }, (_, index) => (
-        <li key={index} className="flex h-[100px] items-center border-b border-divider pr-4 pl-12">
-          <div className="h-[68px] w-12 animate-pulse bg-light-gray" />
-          <div className="ml-12 h-5 w-64 animate-pulse rounded bg-light-gray" />
-        </li>
-      ))}
-    </ul>
   );
 }
