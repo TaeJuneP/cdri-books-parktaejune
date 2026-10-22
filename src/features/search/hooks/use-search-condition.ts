@@ -1,11 +1,12 @@
 "use client";
 
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useMemo } from "react";
 
 import { isSearchTarget } from "@/features/book/constants";
 
 import type { SearchCondition } from "../types";
+import { toSearchHref } from "../utils/search-href";
 
 /**
  * 검색 조건을 URL query(?query=&target=)와 동기화한다.
@@ -14,7 +15,6 @@ import type { SearchCondition } from "../types";
 export function useSearchCondition() {
   const searchParams = useSearchParams();
   const router = useRouter();
-  const pathname = usePathname();
 
   const query = searchParams.get("query")?.trim() ?? "";
   const rawTarget = searchParams.get("target");
@@ -25,12 +25,10 @@ export function useSearchCondition() {
 
   const search = useCallback(
     (next: SearchCondition) => {
-      const params = new URLSearchParams({ query: next.query.trim() });
-      if (next.target) params.set("target", next.target);
       // push로 이력을 남겨 뒤로가기 시 이전 검색으로 돌아갈 수 있게 한다
-      router.push(`${pathname}?${params}`);
+      router.push(toSearchHref(next));
     },
-    [router, pathname],
+    [router],
   );
 
   return { condition, search };
