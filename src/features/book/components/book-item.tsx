@@ -109,7 +109,7 @@ export const BookItem = memo(function BookItem({ book, coverAction }: BookItemPr
           <p className="text-title3 text-text-primary lg:ml-6 lg:shrink-0">
             {formatPrice(getSellingPrice(book))}
           </p>
-          <div className="flex gap-2 lg:ml-14 lg:shrink-0">
+          <div className="flex justify-end gap-2 lg:ml-14 lg:shrink-0">
             <PurchaseLink book={book} className={ROW_BUTTON_CLASS} />
             {toggleButton}
           </div>
