@@ -1,6 +1,22 @@
 import { QueryClient } from "@tanstack/react-query";
 
+import { ApiError } from "./http";
+
 const ONE_MINUTE = 60 * 1000;
+const MAX_RETRY_COUNT = 1;
+
+/**
+ * 실패한 요청을 다시 보낼지 판단한다.
+ * - 4xx(잘못된 검색 조건 등)는 다시 보내도 결과가 같으므로 재시도하지 않는다
+ * - 단, 429(호출량 초과)는 잠시 뒤 성공할 수 있어 재시도한다
+ * - 5xx, 네트워크 오류처럼 일시적일 수 있는 실패는 한 번만 재시도한다
+ */
+export function shouldRetryQuery(failureCount: number, error: unknown): boolean {
+  if (error instanceof ApiError && error.status >= 400 && error.status < 500) {
+    if (error.status !== 429) return false;
+  }
+  return failureCount < MAX_RETRY_COUNT;
+}
 
 export function createQueryClient() {
   return new QueryClient({
@@ -10,8 +26,7 @@ export function createQueryClient() {
         staleTime: ONE_MINUTE,
         // 탭 전환마다 재요청할 만큼 실시간성이 필요한 데이터가 아님
         refetchOnWindowFocus: false,
-        // 일시적 네트워크 오류만 한 번 재시도하고, 그 이상은 에러 UI로 안내
-        retry: 1,
+        retry: shouldRetryQuery,
       },
     },
   });
