@@ -9,6 +9,7 @@ import {
   searchKakaoBooks,
 } from "@/features/book/server/kakao-book-client";
 import { toBookSearchResult } from "@/features/book/server/kakao-book-mapper";
+
 function errorResponse(message: string, status: number) {
   return NextResponse.json({ message }, { status });
 }
