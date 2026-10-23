@@ -3,10 +3,13 @@ import { type NextRequest, NextResponse } from "next/server";
 import { isSearchTarget, KAKAO_MAX_PAGE } from "@/features/book/constants";
 import {
   KakaoApiError,
+  KakaoNetworkError,
+  KakaoTimeoutError,
   MissingApiKeyError,
   searchKakaoBooks,
 } from "@/features/book/server/kakao-book-client";
 import { toBookSearchResult } from "@/features/book/server/kakao-book-mapper";
+
 function errorResponse(message: string, status: number) {
   return NextResponse.json({ message }, { status });
 }
@@ -43,6 +46,14 @@ export async function GET(request: NextRequest) {
       if (error.status === 429) {
         return errorResponse("요청이 많아 잠시 후 다시 시도해 주세요.", 429);
       }
+      return errorResponse("도서 검색 서비스에 일시적인 문제가 발생했습니다.", 502);
+    }
+    if (error instanceof KakaoTimeoutError) {
+      console.error(error.message);
+      return errorResponse("도서 검색 응답이 지연되고 있습니다. 잠시 후 다시 시도해 주세요.", 504);
+    }
+    if (error instanceof KakaoNetworkError) {
+      console.error(error.message, error.cause);
       return errorResponse("도서 검색 서비스에 일시적인 문제가 발생했습니다.", 502);
     }
     throw error;

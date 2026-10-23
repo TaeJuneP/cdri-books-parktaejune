@@ -27,6 +27,9 @@ export function WishButton({ book, size }: WishButtonProps) {
       onClick={() => toggle(book)}
       className={cn(
         "absolute flex items-center justify-center rounded-sm transition-transform active:scale-90",
+        // 목록 하트(16px)는 최소 터치 크기(WCAG 2.5.8, 24px)보다 작아,
+        // 보이는 모양은 그대로 두고 투명한 가상 요소로 누를 수 있는 영역만 4px씩 넓힌다
+        "after:absolute after:-inset-1",
         size === "sm" ? "top-0 right-0" : "top-2 right-2",
       )}
     >

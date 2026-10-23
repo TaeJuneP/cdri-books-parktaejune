@@ -26,7 +26,8 @@ export function SearchResults({ condition }: SearchResultsProps) {
     isFetchNextPageError,
     fetchNextPage,
   } = useBookSearch(condition);
-  const totalCount = data?.totalCount ?? 0;
+  // 검색어가 없으면 0건, 결과를 받기 전(로딩·에러)에는 건수를 비워 '0건'이 잠깐 보이지 않게 한다
+  const totalCount = !condition.query ? 0 : (data?.totalCount ?? null);
 
   // 다음 페이지 요청이 실패하면 자동 재요청을 멈추고 사용자가 직접 재시도하게 한다
   const sentinelRef = useIntersectionObserver<HTMLDivElement>({
